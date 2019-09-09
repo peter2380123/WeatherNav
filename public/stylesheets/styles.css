@@ -1,0 +1,98 @@
+/* Always set the map height explicitly to define the size of the div element that contains the map. */
+#map {
+  height: 100%;
+  float: left;
+  width: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#origin-input,
+#destination-input,
+#stopover-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 200px;
+}
+
+#origin-input:focus,
+#destination-input:focus
+#stopover-input:focus {
+  border-color: #4d90fe;
+}
+
+/* Stop display, now's a pagination */
+#right-panel {
+  font-family: Arial, Helvetica, sans-serif;
+  /* position: absolute; */
+  right: 10px;
+  top: 60%;
+  margin-top: 50px;
+  margin-right: 5px;
+  height: 330px;
+  width: 200px;
+  padding: 5px;
+  z-index: 5;
+  border: 1px solid #999;
+  background: #fff;
+}
+#right-panel select, #right-panel input {
+  font-size: 15px;
+}
+#right-panel select {
+  width: 100%;
+}
+#right-panel i {
+  font-size: 12px;
+}
+h2 {
+  font-size: 22px;
+  margin: 0 0 5px 0;
+  background-color: #fcfcfc;
+}
+ol {
+  /*list-style-type: upper-alpha;*/
+  padding: 0;
+  margin: 0;
+  height: 271px;
+  width: 200px;
+}
+li {
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /*overflow: hidden; */
+}
+li:nth-child(odd) {
+  background-color: #fcfcfc;
+}
+
+#clear-all-button {
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-right: 10px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 200px;
+}
