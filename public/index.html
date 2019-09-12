@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="#" /> <!-- This removes 'favicon.ico Not Found error -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
     <div style="display: none">
@@ -18,13 +19,39 @@
       <input id="stopover-input" class="controls" type="text"
         placeholder="Enter a stopover location">
 
+      <select id="dropdown-list" class="controls">
+        <option value="0">Today</option>
+        <option value="1">Tomorrow</option>
+        <option value="2">In 2 days</option>
+        <option value="3">In 3 days</option>
+        <option value="4">In 4 days</option>
+        <option value="5">In 5 days</option>
+        <option value="6">In 6 days</option>
+        <option value="7">In 7 days</option>
+      </select>
+
       <input type="button" value="Clear all stops" id="clear-all-button">
     </div>
 
     <div id="map"></div>
+    
     <div id="right-panel">
-      <h2>Stops</h2> 
-      <ol id="stops" type="A" start="2"></ol>
+      <h2>Stops</h2><h2>Date</h2><h2>Rain%</h2>
+      <ol id="stops" type="A" start="2"></ol><ul id="date-list"></ul><ul id="rain-chance"></ul>
+      <ul id="origin-dest">
+        <li id="origin-text">Origin: </li>
+        <li id="dest-text">Dest: </li>
+      </ul><ul id="origin-dest-date">
+        <li id="origin-date"></li>
+        <li id="dest-date"></li>
+      </ul><ul id="origin-dest-rain-chance">
+        <li id="origin-rain"></li>
+        <li id="dest-rain"></li>
+      </ul>
+    </div>
+    
+    <div style="display: none">
+     <p id="copyright"><a href="https://darksky.net/poweredby/" style="text-decoration: none">Powered by Dark Sky</a></p>
     </div>
     
     <script src="src/map_func.js"></script>

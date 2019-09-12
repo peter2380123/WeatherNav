@@ -5,12 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 // custom-added npms
 var helmet = require('helmet');
-var weather = require('openweather-apis');
-
-// openweather api config, see https://www.npmjs.com/package/openweather-apis
-// weather.setLang('en'); ... and more
 
 var indexRouter = require('./routes/index');
+var resultRouter = require('./routes/result');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -24,10 +21,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use('/result', resultRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
