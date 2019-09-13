@@ -34,6 +34,17 @@ html, body {
   width: 200px;
 }
 
+#quick-search-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 150px;
+}
+
 #dropdown-list {
   background-color: #e7e7e7;
   font-family: Roboto;
@@ -48,7 +59,8 @@ html, body {
 #origin-input:focus,
 #destination-input:focus,
 #stopover-input:focus,
-#dropdown-list:focus {
+#dropdown-list:focus,
+#quick-search-input:focus {
   border-color: #4d90fe;
 }
 
@@ -165,7 +177,8 @@ li:nth-child(odd) {
   background-color: #cbcbcb;
 }
 
-#clear-all-button {
+#clear-all-button,
+#clear-popup {
   font-family: Roboto;
   font-size: 15px;
   font-weight: 500;

@@ -3,17 +3,17 @@
 // parameter when you first load the API. For example:
 // <script
 // src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+var map;
+var markers = []; 
 
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     mapTypeControl: false,
     center: {lat: -27.46794, lng: 153.02809},
     zoom: 13,
     streetViewControl: false
   });
 
-
-  
   new AutocompleteDirectionsHandler(map);
 }
 
@@ -36,57 +36,75 @@ function AutocompleteDirectionsHandler(map) {
   var destinationInput = document.getElementById('destination-input');
   var stopoverInput = document.getElementById('stopover-input');
   var clearStops = document.getElementById('clear-all-button');
-  var stopList = document.getElementById('right-panel');
+  let clearPopup = document.getElementById('clear-popup');
+  let stopList = document.getElementById('right-panel');
+  let quickSearchInput = document.getElementById('quick-search-input');
   let dropdownList = document.getElementById('dropdown-list');
   let copyrightControl = document.getElementById('copyright');
 
+  // Origin input
   var originAutocomplete = new google.maps.places.Autocomplete(originInput);
   // Specify just the place data fields that you need.
   originAutocomplete.setFields(['place_id', 'geometry']);
 
+  // Destination input
   var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput);
   // Specify just the place data fields that you need.
   destinationAutocomplete.setFields(['place_id', 'geometry']);
 
+  // Stopover input
   var stopoverAutocomplete = new google.maps.places.Autocomplete(stopoverInput);
   stopoverAutocomplete.setFields(['place_id', 'geometry']);
 
+  // Quick search input 
+  let quickSearchAutocomplete = new google.maps.places.Autocomplete(quickSearchInput);
+  quickSearchAutocomplete.setFields(['place_id', 'geometry']);
+
   // Setup click event listener at clear button
-  this.setupClickListener('clear-all-button')
+  this.setupClickListener(['clear-all-button', 'clear-popup']);
+  //this.setupClickListener('clear-popup')
 
   this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
   this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
   this.setupPlaceChangedListener(stopoverAutocomplete, 'STOP');
+  this.setupPlaceChangedListener(quickSearchAutocomplete, 'QUICK');
 
   this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(originInput);
   this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(destinationInput);
   this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(stopoverInput);
   this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(stopList);
   this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(clearStops);
+  this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(clearPopup);
 
-  // Try add dropdown list @ top left
   this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(dropdownList);
+  this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(quickSearchInput);
 
   this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(copyrightControl);
 }
 
 // Handles event upon clear button being clicked
 AutocompleteDirectionsHandler.prototype.setupClickListener = function(id) {
-  var clearAllButton = document.getElementById(id);
-    var me = this;
-    clearAllButton.addEventListener('click', function(){
-      if(waypts.length == 0) // only clear stops if there's content (prevents routing spam)
-      {
-        return;
-      }
-      waypts = [];
-      document.getElementById('stops').innerHTML = "";
-      document.getElementById('rain-chance').innerHTML = "";
-      document.getElementById('date-list').innerHTML = "";
-      me.route();
-      console.log('Re-routing after stop clear');
-    });
-  };
+  var clearAllButton = document.getElementById(id[0]);
+  var me = this;
+  clearAllButton.addEventListener('click', function(){
+    if(waypts.length == 0) // only clear stops if there's content (prevents routing spam)
+    {
+      return;
+    }
+    waypts = [];
+    document.getElementById('stops').innerHTML = "";
+    document.getElementById('rain-chance').innerHTML = "";
+    document.getElementById('date-list').innerHTML = "";
+    me.route();
+  });
+  let clearPopupButton = document.getElementById(id[1]);
+  clearPopupButton.addEventListener('click', function(){
+    for (let i = 0; i < markers.length; i++){
+      markers[i].setMap(null);
+    }
+    markers = [];
+  });
+};
 
 AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(
     autocomplete, mode) {
@@ -104,12 +122,10 @@ AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(
 
     if (mode === 'ORIG') {
       me.originPlaceId = place.place_id;
-      // addOrigin(place); // DEPRECATED
       updateOD(place, forecast, 'origin-date', 'origin-rain');
       document.getElementById('origin-text').innerHTML = "Origin: " + document.getElementById('origin-input').value;
     } else if (mode === 'DEST') {
       me.destinationPlaceId = place.place_id;
-      // addDest(place); // DEPRECATED
       updateOD(place, forecast, 'dest-date', 'dest-rain');
       document.getElementById('dest-text').innerHTML = "Dest: " + document.getElementById('destination-input').value;
     } else if (mode === 'STOP') { // this should keep track to stopovers
@@ -126,30 +142,46 @@ AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(
       me.stopoverPlaceId = place.place_id;
       addStopover(place, forecast);
       
+    } else if (mode == 'QUICK') {
+      document.getElementById('quick-search-input').value = ""; // clears quick search textbox
+      showPopup(place);
+      return; // this quick-searched location is not routed
     }
     me.route();
   });
 };
 
-function addOrigin(place){ // DEPRECATED
-  let li = document.getElementById('origin-rain');
-  let time = document.getElementById('forcast-time');
-  // try fetch
+function showPopup(place){
   $.ajax({
     url: "/result",
     type: "GET",
     cache: false,
     data:{
-      latlng: place.geometry.location.toUrlValue()
+      latlng: place.geometry.location.toUrlValue(),
+      time: 0
     },
-    // processData: false,
-    success: function(response) {
-      // response behavior
-      time.textContent = response[0];
-      li.textContent = response[1];
+    success: function(response){
+      let infoWindow = new google.maps.InfoWindow({
+        content: response[3]
+      });
+      let lat = place.geometry.location.lat();
+      let lng = place.geometry.location.lng();
+      marker = new google.maps.Marker({
+        position: {lat: lat, lng: lng},
+        map: map,
+        title: response[2],
+        icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+      });
+      let center = new google.maps.LatLng(lat, lng);
+      map.panTo(center);
+      map.setZoom(map.getZoom());
+      marker.addListener('click', function(){
+        infoWindow.open(map,this);
+      });
+      google.maps.event.trigger(marker, 'click');
+      markers.push(marker);
     }
-  });
-  // end try fetch
+  });  
 }
 
 function updateOD(place, forecast, dateId, rainId){
@@ -169,25 +201,6 @@ function updateOD(place, forecast, dateId, rainId){
       // response behavior
       dateLi.textContent = response[0];
       rainLi.textContent = response[1];
-    }
-  });
-  // end try fetch
-}
-
-function addDest(place){ // DEPRECATED
-  let li = document.getElementById('dest-rain');
-  // try fetch
-  $.ajax({
-    url: "/result",
-    type: "GET",
-    cache: false,
-    data:{
-      latlng: place.geometry.location.toUrlValue()
-    },
-    // processData: false,
-    success: function(response) {
-      // response behavior
-      li.textContent = response;
     }
   });
   // end try fetch
