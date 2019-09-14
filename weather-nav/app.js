@@ -3,12 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-// custom-added npms
+// middleware
 var helmet = require('helmet');
 
-var indexRouter = require('./routes/index');
+// include custom made API fetch js
 var resultRouter = require('./routes/result');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
