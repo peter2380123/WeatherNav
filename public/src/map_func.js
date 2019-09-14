@@ -62,7 +62,6 @@ function AutocompleteDirectionsHandler(map) {
 
   // Setup click event listener at clear button
   this.setupClickListener(['clear-all-button', 'clear-popup']);
-  //this.setupClickListener('clear-popup')
 
   this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
   this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
@@ -87,18 +86,34 @@ AutocompleteDirectionsHandler.prototype.setupClickListener = function(id) {
   var clearAllButton = document.getElementById(id[0]);
   var me = this;
   clearAllButton.addEventListener('click', function(){
-    if(waypts.length == 0) // only clear stops if there's content (prevents routing spam)
-    {
+    if(!me.originPlaceId || !me.destinationPlaceId){
+      // Nothing in origin or dest, don't bother with the rest
       return;
     }
     waypts = [];
     document.getElementById('stops').innerHTML = "";
     document.getElementById('rain-chance').innerHTML = "";
     document.getElementById('date-list').innerHTML = "";
-    me.route();
+    
+    //me.directionsRenderer.setMap(null);
+    me.originPlaceId = null;
+    me.destinationPlaceId = null;
+    document.getElementById('origin-input').value = "";
+    document.getElementById('destination-input').value = "";
+    document.getElementById('origin-text').innerText = "Origin: ";
+    document.getElementById('dest-text').innerText = "Dest: ";
+    document.getElementById('origin-date').innerText = "";
+    document.getElementById('dest-date').innerText = "";
+    document.getElementById('origin-rain').innerText = "";
+    document.getElementById('dest-rain').innerText = "";
+    me.directionsRenderer.setDirections({routes: []});
   });
   let clearPopupButton = document.getElementById(id[1]);
   clearPopupButton.addEventListener('click', function(){
+    if(markers.length < 1){
+      // Nothing in markers array, don't bother with the rest
+      return;
+    }
     for (let i = 0; i < markers.length; i++){
       markers[i].setMap(null);
     }
