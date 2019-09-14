@@ -1,6 +1,6 @@
 FROM node:12
 MAINTAINER peichun.chien@connect.qut.edu.au
-ADD . /app
+ADD weather-nav /app
 WORKDIR /app
 RUN npm install
 EXPOSE 80
