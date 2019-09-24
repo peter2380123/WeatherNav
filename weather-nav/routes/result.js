@@ -3,7 +3,7 @@ var router = express.Router();
 const axios = require('axios');
 
 /* DarkSky API */
-const key = '3a99ff2b11da6f628cbc490e08c7c80b';
+const key = '<YOUR_API_KEY>';
 
 // Fetch sequence
 router.get('/', function(req, res, next) {
