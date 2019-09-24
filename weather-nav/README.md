@@ -1,4 +1,27 @@
 # EC2 Cloud Computing: Multi-API Mashup
+This is my first web application written in JavaScript, focused on learning how to integrate multiple APIs and deploy it to AWS-like cloud system using a docker image.  
+
+Since this is my first JS project, the code quality is likely not up to standard.   
+Revision will be required as well as some patches regarding uncaught errors. 
+
+At this point, the web app works as intended.
+
+So what is this project about? Here's what it does:
+
+## Want a place to relax without erratic weather?
+![Quick Search Markers](img/multi-quicksearch.png)  
+Simply enter some spots you are interested in, and let the weekly summary help you decide.
+## Planning a long road trip? 
+![Multi-stop Routing](img/multi-stop-routing.png)  
+Route your way and be informed of precipitation chance of each location at different day.
+## What's happening behind the scene?
+![Project Flowchart](project-diagram.png)  
+This is a simple illustration of how this web app works.  
+The project originally planned to have processing done largely server-sided.   
+However, due to Google Maps' functionality being very client-centric, most mapping features are processed on the client side.
+
+## Before continuing
+
 This README is mainly a step-by-step guide for deploying an EC2 web app instance.   
 The 'mashing' of these API features can be seen in the source code.
 
@@ -40,7 +63,7 @@ docker run -p 80:80 weather-nav:latest
 ```  
 The port number depends on what **ENV PORT** and **EXPOSE** were set to.
 
-## Publishing to Cloud
+## Publishing to cloud
 ### Dealing with dockerhub
 Make a repository on dockerhub. Here the repo is named `weather-nav`, same as the docker image file created.
 
