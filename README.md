@@ -14,8 +14,8 @@ Simply enter some spots you are interested in, and let the weekly summary help y
 ## Planning a long road trip? 
 ![Multi-stop Routing](img/multi-stop-routing.png)  
 Route your way and be informed of precipitation chance of each location at different day.
-## What's happening behind the scene?
-![Project Flowchart](project-diagram.png)  
+## What's happening behind the scenes?
+![Project Flowchart](img/project-diagram.png)  
 This is a simple illustration of how this web app works.  
 The project originally planned to have processing done largely server-sided.   
 However, due to Google Maps' functionality being very client-centric, most mapping features are processed on the client side.
