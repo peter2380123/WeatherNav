@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@google/maps": "^0.5.5",
-    "axios": "^0.32.0",
+    "axios": "^0.33.0",
     "cookie-parser": "~1.4.7",
     "debug": "~2.6.9",
     "express": "~4.22.2",
